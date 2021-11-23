@@ -4,33 +4,32 @@
     forceManyBody,
     forceSimulation,
     forceX,
-    forceY,
     SimulationNodeDatum,
   } from 'd3-force'
-  import { links, nodes } from '../data/graph'
+  import { HEIGHT, WIDTH } from '../new/constants'
+  import { links, nodes } from '../new/creation'
 
   nodes.forEach((node) => {
-    node.x = 300 + 100 * Math.random() * (Math.random() > 0.5 ? -1 : 1)
-    node.y = 450 + 100 * Math.random() * (Math.random() > 0.5 ? -1 : 1)
+    node.x = WIDTH / 2 + 100 * Math.random() * (Math.random() > 0.5 ? -1 : 1)
+    node.y = HEIGHT / 2 + 100 * Math.random() * (Math.random() > 0.5 ? -1 : 1)
   })
 
   const simulation = forceSimulation(nodes as unknown as SimulationNodeDatum[])
     .force(
       'link',
       forceLink(links)
-        .id((d) => d.name)
-        .distance(30)
-        .strength(2),
+        .distance((link) => link.distance)
+        .strength((link) => link.strength),
     )
-    .force('charge', forceManyBody().strength(-50))
+    .force('charge', forceManyBody().strength(-10))
     .force(
       'x',
       forceX((d) => {
         switch (d.type) {
           case 'core':
-            return 300
+            return WIDTH / 2
           case 'micro':
-            return 600
+            return WIDTH
           case 'macro':
             return 0
         }
@@ -43,16 +42,16 @@
   simulation.on('tick', () => {
     nodes.forEach((node) => {
       if (node.name === 'Big Bloom') {
-        node.fx = 300
+        node.fx = WIDTH / 2
         node.fy = 120
       }
       if (node.name === 'Oneness') {
-        node.fx = 300
-        node.fy = 660
+        node.fx = WIDTH / 2
+        node.fy = HEIGHT - 120
       }
     })
-    reactiveLinks = links.map((link) => Object.create(link))
-    reactiveNodes = nodes.map((node) => Object.create(node))
+    reactiveLinks = links.map((link) => link)
+    reactiveNodes = nodes.map((node) => node)
   })
 </script>
 
@@ -62,7 +61,7 @@
 
 <h1>we are here</h1>
 
-<svg width="600" height="800">
+<svg width={WIDTH} height={HEIGHT}>
   <g>
     {#each reactiveLinks as link}
       <line

@@ -1,7 +1,6 @@
 import { stageLinks, stageSeeds, substageSeeds } from './models'
 import type { InitNode, InitLink } from './simulation'
 import type { Body, Line, Label } from './elements'
-import { DISTANCE } from './constants'
 import type { StageName, StageType } from './models'
 
 export const nodes: InitNode[] = []
@@ -35,7 +34,8 @@ export const lines: Line[] = stageLinks.map((link) => {
   if (!source || !target) throw new Error('link line failed')
   return {
     linkIndex: addLink({
-      distance: DISTANCE,
+      distance: 1,
+      strength: 1,
       source: source.index,
       target: target.index,
     }),
@@ -60,12 +60,14 @@ const addLabel = (
     stageLabelNodesByName.set(text, nodes[childNodeIndex])
   }
   const bodyLinkIndex = addLink({
-    distance: DISTANCE, // TODO measure text
+    distance: 10, // TODO measure text
+    strength: 3,
     source: parentNodeIndex,
     target: childNodeIndex,
   })
   addLink({
-    distance: DISTANCE,
+    distance: 0.01,
+    strength: 3,
     source: parentNodeIndex,
     target: targetNodeIndex,
   })

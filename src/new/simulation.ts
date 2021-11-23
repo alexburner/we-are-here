@@ -9,6 +9,7 @@ export interface InitNode {
 
 export interface InitLink {
   distance: number // width of label, or default
+  strength: number
   source: number
   target: number
 }
