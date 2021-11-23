@@ -1,29 +1,29 @@
 export const nodes = [
   // beginning
-  { name: 'Big Bloom' },
+  { name: 'Big Bloom', type: 'core' },
   // micro
-  { name: 'Quantum Fields' },
-  { name: 'Particles' },
-  { name: 'Atoms' },
-  { name: 'Molecules' },
-  { name: 'Biomolecules' },
-  { name: 'Cells' },
-  { name: 'Organs' },
-  { name: 'Us' }, // crossover
-  { name: 'Awareness' },
-  { name: 'Meaning' },
+  { name: 'Quantum Fields', type: 'micro' },
+  { name: 'Particles', type: 'micro' },
+  { name: 'Atoms', type: 'micro' },
+  { name: 'Molecules', type: 'micro' },
+  { name: 'Biomolecules', type: 'micro' },
+  { name: 'Cells', type: 'micro' },
+  { name: 'Organs', type: 'micro' },
+  { name: 'Us', type: 'core' }, // crossover
+  { name: 'Awareness', type: 'micro' },
+  { name: 'Meaning', type: 'micro' },
   // end
-  { name: 'Oneness' },
+  { name: 'Oneness', type: 'core' },
   // macro
-  { name: 'Cultures' },
-  { name: 'Collectives' },
-  { name: 'Organisms' },
-  { name: 'Biospheres' },
-  { name: 'Geospheres' },
-  { name: 'Planets' },
-  { name: 'Stars' },
-  { name: 'Galaxies' },
-  { name: 'Cosmic Web' },
+  { name: 'Cultures', type: 'macro' },
+  { name: 'Collectives', type: 'macro' },
+  { name: 'Organisms', type: 'macro' },
+  { name: 'Biospheres', type: 'macro' },
+  { name: 'Geospheres', type: 'macro' },
+  { name: 'Planets', type: 'macro' },
+  { name: 'Stars', type: 'macro' },
+  { name: 'Galaxies', type: 'macro' },
+  { name: 'Cosmic Web', type: 'macro' },
 ] as const
 
 type NodeName = typeof nodes[number]['name']
@@ -49,7 +49,8 @@ export const links: LinkSeed[] = [
   // hosting
   { source: 'Oneness', target: 'Cultures' },
   { source: 'Cultures', target: 'Collectives' },
-  { source: 'Collectives', target: 'Organisms' },
+  { source: 'Collectives', target: 'Us' },
+  { source: 'Us', target: 'Organisms' },
   { source: 'Organisms', target: 'Biospheres' },
   { source: 'Biospheres', target: 'Geospheres' },
   { source: 'Geospheres', target: 'Planets' },
