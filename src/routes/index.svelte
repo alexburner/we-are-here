@@ -9,11 +9,6 @@
   import { HEIGHT, WIDTH } from '../new/constants'
   import { links, nodes } from '../new/creation'
 
-  nodes.forEach((node) => {
-    node.x = WIDTH / 2 + 100 * Math.random() * (Math.random() > 0.5 ? -1 : 1)
-    node.y = HEIGHT / 2 + 100 * Math.random() * (Math.random() > 0.5 ? -1 : 1)
-  })
-
   const simulation = forceSimulation(nodes as unknown as SimulationNodeDatum[])
     .force(
       'link',
@@ -27,11 +22,11 @@
       forceX((d) => {
         switch (d.type) {
           case 'core':
-            return WIDTH / 2
-          case 'micro':
-            return WIDTH
-          case 'macro':
             return 0
+          case 'micro':
+            return WIDTH / 2
+          case 'macro':
+            return -WIDTH / 2
         }
       }),
     )
@@ -42,12 +37,12 @@
   simulation.on('tick', () => {
     nodes.forEach((node) => {
       if (node.name === 'Big Bloom') {
-        node.fx = WIDTH / 2
-        node.fy = 120
+        node.fx = 0
+        node.fy = -HEIGHT * (4 / 10)
       }
       if (node.name === 'Oneness') {
-        node.fx = WIDTH / 2
-        node.fy = HEIGHT - 120
+        node.fx = 0
+        node.fy = HEIGHT * (4 / 10)
       }
     })
     reactiveLinks = links.map((link) => link)
@@ -67,10 +62,10 @@
       <line
         stroke="#999"
         stroke-opacity="0.6"
-        x1={link.source.x}
-        y1={link.source.y}
-        x2={link.target.x}
-        y2={link.target.y}
+        x1={link.source.x + WIDTH / 2}
+        y1={link.source.y + HEIGHT / 2}
+        x2={link.target.x + WIDTH / 2}
+        y2={link.target.y + HEIGHT / 2}
       />
     {/each}
   </g>
@@ -81,8 +76,8 @@
         fill="#FFF"
         stroke="#999"
         stroke-width="1.5"
-        cx={node.x}
-        cy={node.y}
+        cx={node.x + WIDTH / 2}
+        cy={node.y + HEIGHT / 2}
       />
     {/each}
   </g>
