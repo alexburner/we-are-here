@@ -1,6 +1,6 @@
 <script lang="ts">
   import { forceLink, forceManyBody, forceSimulation, forceX } from 'd3-force'
-  import type { ForceLink, ForceNode } from 'src/new/simulation'
+  import type { ForceLink, ForceNode } from '../new/simulation'
   import { HEIGHT, WIDTH } from '../new/constants'
   import { forceLinks, forceNodes } from '../new/creation'
 
@@ -8,14 +8,14 @@
     .force(
       'link',
       forceLink(forceLinks)
-        .distance((link) => link.distance)
-        .strength((link) => link.strength),
+        .distance((x) => x.distance)
+        .strength(1),
     )
-    .force('charge', forceManyBody().strength(-10))
+    .force('charge', forceManyBody().strength(-100))
     .force(
       'x',
-      forceX((d) => {
-        switch (d.type) {
+      forceX((x: ForceNode) => {
+        switch (x.type) {
           case 'core':
             return 0
           case 'micro':
@@ -23,7 +23,7 @@
           case 'macro':
             return -WIDTH / 2
         }
-      }),
+      }).strength(0.04),
     )
 
   $: reactiveNodes = new Array<ForceNode>()

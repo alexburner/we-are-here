@@ -34,10 +34,22 @@ export const lines: Line[] = stageLinks.map((link) => {
   const source = nodesByName.get(link.source)
   const target = nodesByName.get(link.target)
   if (!source || !target) throw new Error('link line failed')
+  if (link.type !== 'symmetry') {
+    // Strengthen vertical links
+    addLink({
+      distance: 1,
+      sourceIndex: source.index,
+      targetIndex: target.index,
+    })
+    addLink({
+      distance: 1,
+      sourceIndex: source.index,
+      targetIndex: target.index,
+    })
+  }
   return {
     linkIndex: addLink({
       distance: 1,
-      strength: 1,
       sourceIndex: source.index,
       targetIndex: target.index,
     }),
@@ -65,14 +77,36 @@ const addLabel = (
     stageLabelNodesByName.set(name, node)
   }
   const bodyLinkIndex = addLink({
-    distance: 10, // TODO measure text
-    strength: 3,
+    distance: 1, // TODO measure text
     sourceIndex: parentNodeIndex,
     targetIndex: childNodeIndex,
   })
+  if (isStageLabel) {
+    // Make Body stronger
+    addLink({
+      distance: 1, // TODO measure text
+      sourceIndex: parentNodeIndex,
+      targetIndex: childNodeIndex,
+    })
+    // Make Stage -> Body stronger
+    addLink({
+      distance: 1,
+      sourceIndex: parentNodeIndex,
+      targetIndex: targetNodeIndex,
+    })
+    addLink({
+      distance: 1,
+      sourceIndex: parentNodeIndex,
+      targetIndex: targetNodeIndex,
+    })
+    addLink({
+      distance: 1,
+      sourceIndex: parentNodeIndex,
+      targetIndex: targetNodeIndex,
+    })
+  }
   addLink({
-    distance: 0.01,
-    strength: 3,
+    distance: 1,
     sourceIndex: parentNodeIndex,
     targetIndex: targetNodeIndex,
   })
@@ -120,7 +154,6 @@ export const forceLinks: ForceLink[] = initLinks.map((initLink) => {
   if (!source || !target) throw new Error('failed to create link')
   return {
     distance: initLink.distance,
-    strength: initLink.strength,
     source,
     target,
   }

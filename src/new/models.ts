@@ -29,7 +29,11 @@ export const stageSeeds = [
 export type StageName = typeof stageSeeds[number]['name']
 export type StageType = typeof stageSeeds[number]['type']
 
-export const stageLinks: { source: StageName; target: StageName }[] = [
+export const stageLinks: {
+  source: StageName
+  target: StageName
+  type?: 'symmetry'
+}[] = [
   // composing
   { source: 'Big Bloom', target: 'Quantum Fields' },
   { source: 'Quantum Fields', target: 'Particles' },
@@ -55,15 +59,15 @@ export const stageLinks: { source: StageName; target: StageName }[] = [
   { source: 'Galaxies', target: 'Cosmic Web' },
   { source: 'Cosmic Web', target: 'Big Bloom' },
   // symmetry
-  { source: 'Quantum Fields', target: 'Cosmic Web' },
-  { source: 'Galaxies', target: 'Particles' },
-  { source: 'Stars', target: 'Atoms' },
-  { source: 'Planets', target: 'Molecules' },
-  { source: 'Geospheres', target: 'Biomolecules' },
-  { source: 'Biospheres', target: 'Cells' },
-  { source: 'Organisms', target: 'Organs' },
-  { source: 'Collectives', target: 'Awareness' },
-  { source: 'Cultures', target: 'Meaning' },
+  { source: 'Quantum Fields', target: 'Cosmic Web', type: 'symmetry' },
+  { source: 'Galaxies', target: 'Particles', type: 'symmetry' },
+  { source: 'Stars', target: 'Atoms', type: 'symmetry' },
+  { source: 'Planets', target: 'Molecules', type: 'symmetry' },
+  { source: 'Geospheres', target: 'Biomolecules', type: 'symmetry' },
+  { source: 'Biospheres', target: 'Cells', type: 'symmetry' },
+  { source: 'Organisms', target: 'Organs', type: 'symmetry' },
+  { source: 'Collectives', target: 'Awareness', type: 'symmetry' },
+  { source: 'Cultures', target: 'Meaning', type: 'symmetry' },
 ]
 
 export const substageSeeds: { parent: StageName; name: string }[] = [
