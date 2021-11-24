@@ -13,3 +13,7 @@ Three layers total:
 1. core geometry (as was)
 2. core labels (anchor fx fy on related core stage, then loose node for label)
 3. sub labels (anchor fx fy on related core label, then loose node for label)
+
+See branch `seeking-original` for that sweet clean geometry
+
+Commit `db76ee3 WIP: get something, start something new`
