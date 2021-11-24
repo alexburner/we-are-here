@@ -36,8 +36,8 @@ export const lines: Line[] = stageLinks.map((link) => {
     linkIndex: addLink({
       distance: 1,
       strength: 1,
-      source: source.index,
-      target: target.index,
+      sourceIndex: source.index,
+      targetIndex: target.index,
     }),
   }
 })
@@ -62,14 +62,14 @@ const addLabel = (
   const bodyLinkIndex = addLink({
     distance: 10, // TODO measure text
     strength: 3,
-    source: parentNodeIndex,
-    target: childNodeIndex,
+    sourceIndex: parentNodeIndex,
+    targetIndex: childNodeIndex,
   })
   addLink({
     distance: 0.01,
     strength: 3,
-    source: parentNodeIndex,
-    target: targetNodeIndex,
+    sourceIndex: parentNodeIndex,
+    targetIndex: targetNodeIndex,
   })
   return {
     text,

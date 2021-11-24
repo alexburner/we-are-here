@@ -1,52 +1,15 @@
 <script lang="ts">
-  import {
-    forceLink,
-    forceManyBody,
-    forceSimulation,
-    forceX,
-    SimulationNodeDatum,
-  } from 'd3-force'
+  import { createSimulation } from '../new/simulation'
+  import type { Node, Link } from '../new/simulation'
   import { HEIGHT, WIDTH } from '../new/constants'
   import { links, nodes } from '../new/creation'
 
-  const simulation = forceSimulation(nodes as unknown as SimulationNodeDatum[])
-    .force(
-      'link',
-      forceLink(links)
-        .distance((link) => link.distance)
-        .strength((link) => link.strength),
-    )
-    .force('charge', forceManyBody().strength(-10))
-    .force(
-      'x',
-      forceX((d) => {
-        switch (d.type) {
-          case 'core':
-            return 0
-          case 'micro':
-            return WIDTH / 2
-          case 'macro':
-            return -WIDTH / 2
-        }
-      }),
-    )
+  $: reactiveNodes = new Array<Node>()
+  $: reactiveLinks = new Array<Link>()
 
-  $: reactiveLinks = []
-  $: reactiveNodes = []
-
-  simulation.on('tick', () => {
-    nodes.forEach((node) => {
-      if (node.name === 'Big Bloom') {
-        node.fx = 0
-        node.fy = -HEIGHT * (4 / 10)
-      }
-      if (node.name === 'Oneness') {
-        node.fx = 0
-        node.fy = HEIGHT * (4 / 10)
-      }
-    })
-    reactiveLinks = links.map((link) => link)
-    reactiveNodes = nodes.map((node) => node)
+  createSimulation(nodes, links, (forceNodes, forceLinks) => {
+    reactiveNodes = [...forceNodes]
+    reactiveLinks = [...forceLinks]
   })
 </script>
 
@@ -76,8 +39,8 @@
         fill="#FFF"
         stroke="#999"
         stroke-width="1.5"
-        cx={node.x + WIDTH / 2}
-        cy={node.y + HEIGHT / 2}
+        cx={node.x ?? 0 + WIDTH / 2}
+        cy={node.y ?? 0 + HEIGHT / 2}
       />
     {/each}
   </g>
