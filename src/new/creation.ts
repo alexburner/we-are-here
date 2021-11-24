@@ -1,28 +1,30 @@
 import { stageLinks, stageSeeds, substageSeeds } from './models'
-import type { InitNode, InitLink } from './simulation'
+import type { InitNode, InitLink, ForceNode, ForceLink } from './simulation'
 import type { Body, Line, Label } from './elements'
 import type { StageName, StageType } from './models'
+import { HEIGHT } from './constants'
+import { jiggle } from './util'
 
-export const nodes: InitNode[] = []
-export const links: InitLink[] = []
+export const initNodes: InitNode[] = []
+export const initLinks: InitLink[] = []
 
 const nodesByName = new Map<StageName, InitNode>()
 const stageLabelNodesByName = new Map<StageName, InitNode>()
 
 const addNode = (node: InitNode): number => {
   if (node.name) nodesByName.set(node.name, node)
-  nodes.push(node)
-  return nodes.length - 1
+  initNodes.push(node)
+  return initNodes.length - 1
 }
 
 const addLink = (link: InitLink): number => {
-  links.push(link)
-  return links.length - 1
+  initLinks.push(link)
+  return initLinks.length - 1
 }
 
 export const bodies: Body[] = stageSeeds.map((seed) => ({
   nodeIndex: addNode({
-    index: nodes.length,
+    index: initNodes.length,
     type: seed.type,
     name: seed.name,
   }),
@@ -36,8 +38,8 @@ export const lines: Line[] = stageLinks.map((link) => {
     linkIndex: addLink({
       distance: 1,
       strength: 1,
-      source: source.index,
-      target: target.index,
+      sourceIndex: source.index,
+      targetIndex: target.index,
     }),
   }
 })
@@ -49,27 +51,30 @@ const addLabel = (
   isStageLabel?: boolean,
 ): Label => {
   const parentNodeIndex = addNode({
-    index: nodes.length,
+    index: initNodes.length,
     type,
   })
   const childNodeIndex = addNode({
-    index: nodes.length,
+    index: initNodes.length,
     type,
   })
   if (isStageLabel) {
-    stageLabelNodesByName.set(text, nodes[childNodeIndex])
+    const name = text as StageName
+    const node = initNodes[childNodeIndex]
+    if (!node) throw new Error('add stage label failed')
+    stageLabelNodesByName.set(name, node)
   }
   const bodyLinkIndex = addLink({
     distance: 10, // TODO measure text
     strength: 3,
-    source: parentNodeIndex,
-    target: childNodeIndex,
+    sourceIndex: parentNodeIndex,
+    targetIndex: childNodeIndex,
   })
   addLink({
     distance: 0.01,
     strength: 3,
-    source: parentNodeIndex,
-    target: targetNodeIndex,
+    sourceIndex: parentNodeIndex,
+    targetIndex: targetNodeIndex,
   })
   return {
     text,
@@ -90,3 +95,33 @@ export const labels: Label[] = [
     return addLabel(stageNode.type, seed.name, targetNode.index)
   }),
 ]
+
+export const forceNodes: ForceNode[] = initNodes.map((initNode) => ({
+  type: initNode.type,
+  name: initNode.name,
+  x: jiggle(0, 100),
+  y: jiggle(0, 100),
+}))
+
+forceNodes.forEach((node) => {
+  if (node.name === 'Big Bloom') {
+    node.fx = 0
+    node.fy = -HEIGHT * (4 / 10)
+  }
+  if (node.name === 'Oneness') {
+    node.fx = 0
+    node.fy = HEIGHT * (4 / 10)
+  }
+})
+
+export const forceLinks: ForceLink[] = initLinks.map((initLink) => {
+  const source = forceNodes[initLink.sourceIndex]
+  const target = forceNodes[initLink.targetIndex]
+  if (!source || !target) throw new Error('failed to create link')
+  return {
+    distance: initLink.distance,
+    strength: initLink.strength,
+    source,
+    target,
+  }
+})
